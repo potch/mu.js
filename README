@@ -1,1 +1,1 @@
-When all you care about is IE9+, jQuery is pretty heavy. I use this as a drop-in when I'm building simple projects.
+When all you care about is modern browsers (Firefox 4+, Chrome, Safari 5+, IE9+), jQuery is pretty heavy. I use this as a drop-in when I'm building simple projects.
