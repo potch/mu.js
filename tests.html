@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>picolib tests</title>
+        <style>
+            #log .err {
+                color: red;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>picolib Test Suite</h1>
+        <div id="log">
+        </div>
+        <div id="stage"></div>
+        <script src="picolib.js"></script>
+        <script>
+            var currentSection,
+                logEl = document.getElementById('log'),
+                out = '',
+                stageEl = µ('#stage')[0],
+                el,
+                passed = 0,
+                failed = 0;
+
+            window.onerror = function(m, f, l) {
+                err(µ.fmt('Script Error: {0}', m));
+            }
+            function log(msg) {
+                out += "<li>" + msg;
+            }
+            function err(msg) {
+                out += "<li class='err'>" + msg;
+            }
+            function assert(actual, expected) {
+                if (actual === expected) {
+                    log("PASS");
+                    passed++;
+                } else {
+                    err(µ.fmt("FAIL - actual:{0} - expected:{1}", actual, expected));
+                    failed++;
+                }
+            }
+            function section(name) {
+                if (currentSection) out += "</ul>";
+                currentSection = name;
+                log(µ.fmt('<h2>Section: {0}</h2>', name));
+                out += "<ul>";
+                stageEl.innerHTML = '<div id="foo" class="bar" data-baz="1"></div>';
+                el = document.getElementById('foo');
+                stageEl.appendChild(el);
+            }
+        </script>
+        <script>
+            section('fmt');
+            assert(µ.fmt('{0}b','a'), 'ab');
+            assert(µ.fmt('{0}b{1}','a', 'c'), 'abc');
+            assert(µ.fmt('{0}b',['a']), 'ab');
+            assert(µ.fmt('{0}b{1}',['a', 'c']), 'abc');
+            assert(µ.fmt('{a}b{c}',{a:'a',c:'c'}), 'abc');
+
+            section('selector');
+            assert(µ(el)[0], el);
+            assert(µ('#stage div').length, 1);
+            assert(µ('#foo')[0], el);
+            assert(µ('.bar')[0], el);
+            assert(µ('[data-baz]')[0], el);
+
+            section('attr');
+            assert(µ(el).attr('id'), 'foo');
+            µ(el).attr({'id': 'test', 'data-baz': 'test2'});
+            assert(µ(el).attr('id'), 'test');
+            assert(µ(el).attr('data-baz'), 'test2');
+        </script>
+        <script>
+            out += '</ul>'
+            out += µ.fmt('<h2>{0} Tests, {1} Passed, {2} Failed</h2>', passed+failed, passed, failed);
+            logEl.innerHTML = out;
+        </script>
+    </body>
+<html>
