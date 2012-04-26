@@ -1,3 +1,4 @@
+
 // Simple deferred implementation.
 // Usage:
 // var def = new µ.def();
