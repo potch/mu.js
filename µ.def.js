@@ -23,3 +23,36 @@
         };
     });
 };
+
+µ.when = function() {
+    var ret = new µ.def(),
+        defs = µ.arg(arguments),
+        vals = [],
+        left = defs.length;
+    function ph(n) {
+        return function(o) {
+            if (arguments.length > 1) {
+                vals[n] = µ.arg(arguments);
+            } else {
+                vals[n] = o;
+            }
+            if (--left < 1) {
+                ret.pass(vals);
+            }
+        };
+    }
+    function fh() {
+        ret.fail(arguments);
+    }
+    setTimeout(function() {
+        for (var i=0; i<defs.length; i++) {
+            var d = defs[i];
+            if (d instanceof µ.def) {
+                d.onpass(ph(i)).onfail(fh);
+            } else {
+                ph(i)(d);
+            }
+        }
+    }, 0);
+    return ret;
+}
