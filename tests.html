@@ -14,7 +14,8 @@
         <div id="log">
         </div>
         <div id="stage"></div>
-        <script src="picolib.js"></script>
+        <script src="µ.js"></script>
+        <script src="µ.def.js"></script>
         <script>
             var currentSection,
                 logEl = document.getElementById('log'),
@@ -45,7 +46,7 @@
             function section(name) {
                 if (currentSection) out += "</ul>";
                 currentSection = name;
-                log(µ.fmt('<h2>Section: {0}</h2>', name));
+                out += µ.fmt('<h2>Section: {0}</h2>', name);
                 out += "<ul>";
                 stageEl.innerHTML = '<div id="foo" class="bar" data-baz="1"></div>';
                 el = document.getElementById('foo');

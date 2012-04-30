@@ -15,7 +15,7 @@
             return that;
         };
         that[m] = function() {
-            var params = arg(arguments);
+            var params = µ.arg(arguments);
             fn[m].forEach(function(f) {
                 f.apply(false,params);
             });

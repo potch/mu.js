@@ -1,73 +1,97 @@
 var µ = (function(win, doc) {
 
-    function µ(sel) {
-        var ret,
-            p,
+    var call = 'call',
+        obj = 'object',
+        length = 'length',
+        qsa = 'querySelectorAll',
+        pn = 'parentNode';
 
-        ret = sel.nodeType ? [sel] : doc.querySelectorAll(sel),
+    function mu(sel) {
+        var ret,
+            i,
+
+        ret = sel.nodeType ? [sel] : doc[qsa](sel),
 
         eachEl = ret.each = function(fn) {
             each(ret, function(item) {
-                fn.call(item);
+                fn(item);
             });
             return ret;
         };
 
 
         ret.on = function(type, handler) {
-            eachEl(function() {
-                on(this, type, handler)
+            eachEl(function(el) {
+                on(el, type, handler)
             });
             return ret;
         };
 
 
-        ret.css = function(o) {
-            if (typeof o == 'object') {
-                for (p in o) {
-                    eachEl(function() {
-                        this.style[p] = o[p];
-                    });
-                }
-                return ret;
-            }
-            return win.getComputedStyle(ret[0]).getPropertyValue(o);
+        ret.delegate = function(type, sel, handler) {
+            eachEl(function(dEl) {
+                on(dEl, type, function(e,t) {
+                    var matches = dEl[qsa](sel);
+                    for (var el = t; el[pn] && el != dEl; el = el[pn]) {
+                        for (i=0;i<matches[length];i++) {
+                            if (matches[i] == el) {
+                                handler[call](el, e);
+                                return;
+                            }
+                        }
+                    }
+                });
+            });
+            return ret;
         };
 
-
-        ret.attr = function(o) {
-            if (typeof o == 'object') {
-                for (p in o) {
-                    eachEl(function() {
-                        this.setAttribute(p, o[p]);
-                    });
+        function prop(css_if_true) {
+            return function(o) {
+                if (typeof o == obj) {
+                    for (i in o) {
+                        eachEl(function(el) {
+                            if (css_if_true) {
+                                el.style[i] = o[i];
+                            } else {
+                                el.setAttribute(i, o[i]);
+                            }
+                        });
+                    }
+                    return ret;
                 }
-                return ret;
+                if (css_if_true) {
+                    return win.getComputedStyle(ret[0]).getPropertyValue(o);
+                } else {
+                    return ret[0].getAttribute(o);
+                }
             }
-            return ret[0].getAttribute(o);
-        };
+        }
+
+        ret.css = prop(1);
+        ret.attr = prop();
 
         return ret;
     };
 
     var ap = Array.prototype,
         fmt_re = /\{([^}]+)\}/g,
-        arg = function(a, i) {
-            return ap.slice.call(a,i||0);
+        arg = mu.arg = function(a, i) {
+            return ap.slice[call](a,i||0);
         },
         each = function(a, f) {
-            ap.forEach.call(a, f);
+            ap.forEach[call](a, f);
         },
-        fmt = µ.fmt = function(s, vals) {
-            if (!(vals instanceof Array || vals instanceof Object))
-                vals = arg(arguments, 1);
-            return s.replace(fmt_re, function(_, match){ return vals[match]; });
-        },
-        on = µ.on = function(obj, type, handler) {
+        on = mu.on = function(obj, type, handler) {
             obj.addEventListener(type, function(e) {
-                handler.call(e.target, e);
+                handler(e, e.target);
             }, false);
         };
 
-    return µ;
+        mu.fmt = function(s, vals) {
+            if (!(vals instanceof Array || vals instanceof Object))
+                vals = arg(arguments, 1);
+            return s.replace(fmt_re, function(_, match){ return vals[match]; });
+        };
+
+    return mu;
 })(window, document);
