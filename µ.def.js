@@ -1,4 +1,3 @@
-
 // Simple deferred implementation.
 // Usage:
 // var def = new µ.def();
@@ -15,7 +14,7 @@
             return that;
         };
         that[m] = function() {
-            var params = µ.arg(arguments);
+            var params = µ.arr(arguments);
             fn[m].forEach(function(f) {
                 f.apply(false,params);
             });
@@ -26,13 +25,13 @@
 
 µ.when = function() {
     var ret = new µ.def(),
-        defs = µ.arg(arguments),
+        defs = µ.arr(arguments),
         vals = [],
         left = defs.length;
     function ph(n) {
         return function(o) {
             if (arguments.length > 1) {
-                vals[n] = µ.arg(arguments);
+                vals[n] = µ.arr(arguments);
             } else {
                 vals[n] = o;
             }
