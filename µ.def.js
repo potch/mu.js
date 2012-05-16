@@ -8,7 +8,7 @@
     mu.def = function() {
         var fn = {},
             that = this;
-        ['pass','fail'].forEach(function(m) {
+        ['pass','fail','progress'].forEach(function(m) {
             fn[m] = [];
             that['on'+m] = function(f) {
                 fn[m].push(f);
@@ -40,6 +40,11 @@
                 }
             };
         }
+        function pr(n) {
+            return function() {
+                ret.progress(defs[n]);
+            }
+        }
         function fh() {
             ret.fail(arguments);
         }
@@ -48,7 +53,7 @@
             for (i=0; i<defs[len]; i++) {
                 d = defs[i];
                 if (d instanceof mu.def) {
-                    d.onpass(ph(i)).onfail(fh);
+                    d.onpass(ph(i)).onpass(pr(i)).onfail(fh);
                 } else {
                     ph(i)(d);
                 }
