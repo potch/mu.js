@@ -4,6 +4,15 @@
 // def.onpass(yay).onpass(dance).onfail(boo);
 // def.pass('party'); // yay() and dance() are called with 'party'
 
+(function (factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define(['µ'], factory);
+    } else {
+        // Browser globals
+        factory(µ);
+    }
+}(function(µ) {
 (function(mu, len) {
     mu.def = function() {
         var fn = {},
@@ -58,3 +67,4 @@
     };
 
 })(µ, 'length');
+}));

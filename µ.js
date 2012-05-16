@@ -1,4 +1,13 @@
-var µ = (function(win, doc) {
+(function (factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define(factory);
+    } else {
+        // Browser globals
+        window.µ = factory();
+    }
+}(function() {
+return (function(win, doc) {
 
     var call = 'call',
         obj = 'object',
@@ -86,3 +95,4 @@ var µ = (function(win, doc) {
 
     return mu;
 })(window, document);
+}));
