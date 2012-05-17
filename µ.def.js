@@ -8,14 +8,14 @@
     mu.def = function() {
         var fn = {},
             that = this;
-        ['pass','fail','progress'].forEach(function(m) {
+        ['progress','pass','fail'].forEach(function(m) {
             fn[m] = [];
             that['on'+m] = function(f) {
                 fn[m].push(f);
                 return that;
             };
             that[m] = function(params) {
-                if (that.result) return;
+                if (that.result && that.result != 'progress') return;
                 params = mu.arr(arguments);
                 fn[m].forEach(function(f) {
                     f.apply(false,params);
@@ -53,7 +53,7 @@
             for (i=0; i<defs[len]; i++) {
                 d = defs[i];
                 if (d instanceof mu.def) {
-                    d.onpass(ph(i)).onpass(pr(i)).onfail(fh);
+                    d.onpass(pr(i)).onpass(ph(i)).onfail(fh);
                 } else {
                     ph(i)(d);
                 }
