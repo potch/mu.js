@@ -5,7 +5,7 @@ var µ = (function(win, doc) {
         length = 'length',
         qsa = 'querySelectorAll',
         forEach = 'forEach',
-        pn = 'parentNode';
+        parentNode = 'parentNode';
 
     function mu(sel) {
         var i,
@@ -44,7 +44,7 @@ var µ = (function(win, doc) {
                 ret[forEach](function(dEl) {
                     on(dEl, type, function(e,t) {
                         var matches = dEl[qsa](sel);
-                        for (var el = t; el[pn] && el != dEl; el = el[pn]) {
+                        for (var el = t; el[parentNode] && el != dEl; el = el[parentNode]) {
                             for (i=0;i<matches[length];i++) {
                                 if (matches[i] == el) {
                                     handler[call](el, e);
