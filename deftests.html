@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+
+<meta http-equiv="content-type" content="text/html;charset=utf-8">
+<title>µ.def  tests</title>
+<style>
+#output {
+    border: 1px solid red;
+}
+</style>
+
+<script src="µ.js"></script>
+<script src="µ.def.js"></script>
+
+<script>
+
+function to(msg, ms) {
+    var def = new µ.def();
+    setTimeout(function() {
+        def.pass(msg);
+    }, ms);
+    return def;
+}
+
+function append(msg) {
+    var target = µ('#output')[0];
+    var add = µ.fmt('<li>{0}</li>', msg);
+    target.innerHTML += add;
+}
+
+var a = to('a', 300).onpass(append);
+var b = to('b', 100).onpass(append);
+var c = to('c', 500).onpass(append);
+
+a.name = 'a';
+b.name = 'b';
+c.name = 'c';
+
+var passed = 0;
+
+var w = µ.when(a, b, c).onpass(function(A, B, C) {
+    var msg = µ.fmt('Got these values: {0}, {1}, {2}', A, B, C);
+    append(msg);
+}).onprogress(function(def) {
+    passed++;
+    var msg = µ.fmt('This deferred passed: {0}', def.name);
+    append(msg);
+}).onpass(function() {
+    if (passed === 3) {
+        append('TESTS PASSED!');
+    } else {
+        append('TESTS FAILED!');
+    }
+}).onfail(function() {
+    append('TESTS FAILED!!!');
+});
+
+</script>
+
+<ul id="output">
+    <li>Here's the output...</li>
+</ul>
